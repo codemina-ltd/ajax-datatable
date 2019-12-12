@@ -153,7 +153,7 @@ class AjaxDataTable
                     $this->_criteria->addSearchCondition($field, $this->_search->value, true, 'OR');
                 }
             }
-            $this->_filtered = (int) Client::model()->with($this->_with)->count($this->_criteria);
+            $this->_filtered = (int) $this->_className::model()->with($this->_with)->count($this->_criteria);
         } else {
             $this->_filtered = $this->_count;
         }
