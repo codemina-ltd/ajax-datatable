@@ -15,8 +15,8 @@ use function Html\raw;
  *
  * @author Ibrahim Haj <e.ibh2011@gmail.com>
  *
- * @property CPagination $_pages
- * @property CDbCriteria $_criteria
+ * @property \CPagination $_pages
+ * @property \CDbCriteria $_criteria
  * @property integer $_count
  * @property integer $_draw
  * @property integer $_filtered
@@ -28,8 +28,8 @@ use function Html\raw;
  * @property stdClass $_data
  * @property array $_columns
  * @property array $_sort
- * @property mixed|CActiveRecord $_className
- * @property CHttpRequest $_request
+ * @property mixed|\CActiveRecord $_className
+ * @property \CHttpRequest $_request
  */
 class AjaxDataTable
 {
@@ -53,19 +53,19 @@ class AjaxDataTable
 
     /**
      * AjaxDataTable constructor.
-     * @param mixed|CActiveRecord $className
-     * @throws CException
+     * @param mixed|\CActiveRecord $className
+     * @throws \CException
      */
     public function __construct(string $className)
     {
-        if ((new $className) instanceof CActiveRecord) {
+        if ((new $className) instanceof \CActiveRecord) {
             $this->init();
 
             $this->_className = $className;
             $this->_count = $className::model()->count($this->_criteria);
-            $this->_pages = new CPagination($this->_count);
+            $this->_pages = new \CPagination($this->_count);
         } else {
-            throw new CException('Model is not instance of CActiveRecord', 500);
+            throw new \CException('Model is not instance of CActiveRecord', 500);
         }
     }
 
@@ -80,8 +80,8 @@ class AjaxDataTable
         $this->_columns = $this->_request->getQuery('columns');
         $this->_sort = $this->_request->getQuery('order');
 
-        $this->_criteria = new CDbCriteria();
-        $this->_data = new stdClass();
+        $this->_criteria = new \CDbCriteria();
+        $this->_data = new \stdClass();
     }
 
     /**
