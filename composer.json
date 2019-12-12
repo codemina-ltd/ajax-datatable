@@ -1,0 +1,15 @@
+{
+    "name": "codemina/ajax_datatable",
+    "description": "Yii Ajax DataTable library",
+    "type": "library",
+    "require": {
+        "oscarotero/html": "^0.1.5"
+    },
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Ibrahim Haj",
+            "email": "e.ibh2011@gmail.com"
+        }
+    ]
+}
