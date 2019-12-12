@@ -71,7 +71,7 @@ class AjaxDataTable
 
     private function init()
     {
-        $this->_request = Yii::app()->request;
+        $this->_request = \Yii::app()->request;
 
         $this->_length = (int)$this->_request->getQuery('length');
         $this->_start = (int)$this->_request->getQuery('start');
@@ -137,7 +137,7 @@ class AjaxDataTable
         if (is_object($this->_search) && !empty($this->_search->value) && !empty($this->_searchFields)) {
             foreach ($this->_searchFields as $field) {
                 if (is_array($field)) {
-                    $items = Yii::app()->evaluateExpression($field[1]);
+                    $items = \Yii::app()->evaluateExpression($field[1]);
                     $indexes = [];
                     foreach ($items as $key => $item) {
                         if (mb_strpos($item, $this->_search->value) !== false) {
@@ -260,7 +260,7 @@ class AjaxDataTable
 
             // Setup rules
             if (isset($action['expression'])) {
-                if (Yii::app()->evaluateExpression($action['expression'], ['model' => $model])) {
+                if (\Yii::app()->evaluateExpression($action['expression'], ['model' => $model])) {
                     $actions[] = $a;
                 } else {
                     continue;
