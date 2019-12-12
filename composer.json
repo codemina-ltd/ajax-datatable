@@ -11,5 +11,10 @@
             "name": "Ibrahim Haj",
             "email": "e.ibh2011@gmail.com"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "CodeMina\\AjaxTable\\" : "src"
+        }
+    }
 }
