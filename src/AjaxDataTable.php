@@ -58,7 +58,6 @@ class AjaxDataTable
     private $_columns = [];
     private $_sort;
     private $_with = [];
-    private $_withActions;
     private $_controller;
     private $_actionView;
 
@@ -66,13 +65,11 @@ class AjaxDataTable
      * AjaxDataTable constructor.
      * @param mixed|CActiveRecord $className
      * @param CController $controller
-     * @param bool $withActions
      * @param string $actionView
      * @throws CException
      */
-    public function __construct(string $className, CController $controller, bool $withActions = true, string $actionView = null)
+    public function __construct(string $className, CController $controller, string $actionView = null)
     {
-        $this->_withActions = $withActions;
         $this->_controller = $controller;
         $this->_actionView = $actionView;
 
@@ -142,7 +139,7 @@ class AjaxDataTable
             }
 
             $data = $record->getColumns();
-            if ($this->_withActions && !is_null($this->_actionView)) {
+            if (!is_null($this->_actionView)) {
                 $data['actions'] = $this->buildActionsView($record);
             }
 
@@ -164,6 +161,9 @@ class AjaxDataTable
         ], true);
     }
 
+    /**
+     * @throws CException
+     */
     private function setupPage()
     {
         if (is_object($this->_search) && !empty($this->_search->value) && !empty($this->_searchFields)) {
