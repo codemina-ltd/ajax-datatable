@@ -30,7 +30,6 @@ use function Html\raw;
  * @property integer $_filtered
  * @property integer $_length
  * @property integer $_start
- * @property array $_searchFields
  * @property array $_actions
  * @property stdClass $_search
  * @property stdClass $_data
@@ -53,7 +52,6 @@ class AjaxDataTable
     private $_className;
     private $_data;
     private $_search;
-    private $_searchFields = [];
     private $_columns = [];
     private $_sort;
     private $_with = [];
@@ -100,6 +98,14 @@ class AjaxDataTable
     }
 
     /**
+     * @return CDbCriteria
+     */
+    public function getCriteria(): CDbCriteria
+    {
+        return $this->_criteria;
+    }
+
+    /**
      * @param array $with
      */
     public function setWith(array $with): void
@@ -112,7 +118,26 @@ class AjaxDataTable
      */
     public function setSearchFields(...$fields)
     {
-        $this->_searchFields = $fields;
+        if (is_object($this->_search) && !empty($this->_search->value)) {
+            foreach ($fields as $field) {
+                if (is_array($field)) {
+                    $items = Yii::app()->evaluateExpression($field[1]);
+                    $indexes = [];
+                    foreach ($items as $key => $item) {
+                        if (mb_strpos($item, $this->_search->value) !== false) {
+                            $indexes[] = $key;
+                        }
+                    }
+                    if (!empty($indexes)) {
+                        foreach ($indexes as $index) {
+                            $this->_criteria->addSearchCondition($field[0], $index, true, 'OR');
+                        }
+                    }
+                } else {
+                    $this->_criteria->addSearchCondition($field, $this->_search->value, true, 'OR');
+                }
+            }
+        }
     }
 
     /**
@@ -155,29 +180,7 @@ class AjaxDataTable
      */
     private function setupPage()
     {
-        if (is_object($this->_search) && !empty($this->_search->value) && !empty($this->_searchFields)) {
-            foreach ($this->_searchFields as $field) {
-                if (is_array($field)) {
-                    $items = Yii::app()->evaluateExpression($field[1]);
-                    $indexes = [];
-                    foreach ($items as $key => $item) {
-                        if (mb_strpos($item, $this->_search->value) !== false) {
-                            $indexes[] = $key;
-                        }
-                    }
-                    if (!empty($indexes)) {
-                        foreach ($indexes as $index) {
-                            $this->_criteria->addSearchCondition($field[0], $index, true, 'OR');
-                        }
-                    }
-                } else {
-                    $this->_criteria->addSearchCondition($field, $this->_search->value, true, 'OR');
-                }
-            }
-            $this->_filtered = (int)$this->_className::model()->with($this->_with)->count($this->_criteria);
-        } else {
-            $this->_filtered = $this->_count;
-        }
+        $this->_filtered = (int)$this->_className::model()->with($this->_with)->count($this->_criteria);
 
         $column = $this->_columns[(int)$this->_sort[0]['column']]['name'];
         $dir = $this->_sort[0]['dir'];
