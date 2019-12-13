@@ -54,12 +54,12 @@ class AjaxDataTable
     private $_data;
     private $_search;
     private $_searchFields = [];
-    private $_actions = [];
     private $_columns = [];
     private $_sort;
     private $_with = [];
     private $_controller;
     private $_actionView;
+    private $_table = null;
 
     /**
      * AjaxDataTable constructor.
@@ -138,7 +138,8 @@ class AjaxDataTable
                 break;
             }
 
-            $data = $record->getColumns();
+            $data = $this->_table ? $record->getColumns($this->_table) : $record->getColumns();
+
             if (!is_null($this->_actionView)) {
                 $data['actions'] = $this->buildActionsView($record);
             }
@@ -147,18 +148,6 @@ class AjaxDataTable
         }
 
         echo json_encode($this->_data);
-    }
-
-    /**
-     * @param CActiveRecord $model
-     * @return string|string[]|null
-     * @throws CException
-     */
-    private function buildActionsView(CActiveRecord $model)
-    {
-        return $this->_controller->renderPartial($this->_actionView, [
-            'model' => $model
-        ], true);
     }
 
     /**
@@ -185,7 +174,7 @@ class AjaxDataTable
                     $this->_criteria->addSearchCondition($field, $this->_search->value, true, 'OR');
                 }
             }
-            $this->_filtered = (int) $this->_className::model()->with($this->_with)->count($this->_criteria);
+            $this->_filtered = (int)$this->_className::model()->with($this->_with)->count($this->_criteria);
         } else {
             $this->_filtered = $this->_count;
         }
@@ -228,88 +217,21 @@ class AjaxDataTable
 
     /**
      * @param CActiveRecord $model
-     * @return false|string
+     * @return string|string[]|null
+     * @throws CException
      */
-    private function buildActions($model)
+    private function buildActionsView(CActiveRecord $model)
     {
-        ob_start();
-
-        echo div(
-            ['class' => 'dropdown'],
-            button(
-                [
-                    'class' => 'btn btn-secondary dropdown-toggle btn-sm',
-                    'type' => 'button',
-                    'aria-haspopup' => 'true',
-                    'aria-expanded' => 'false'
-                ],
-                'Actions'
-            )->data('toggle', 'dropdown'),
-            div(
-                [
-                    'class' => 'dropdown-menu',
-                    'aria-labelledby' => 'dropdownMenuButton'
-                ],
-                ...$this->actions($model)
-            )
-        );
-
-        $actions = ob_get_contents();
-        ob_end_clean();
-
-        return $actions;
+        return $this->_controller->renderPartial($this->_actionView, [
+            'model' => $model
+        ], true);
     }
 
     /**
-     * @param CActiveRecord $model
-     * @return array
+     * @param mixed $table
      */
-    private function actions($model)
+    public function setTable($table): void
     {
-        $actions = [];
-        foreach ($this->_actions as $action) {
-            $a = a(
-                [
-                    'class' => 'dropdown-item client-action',
-                    'href' => 'javascript:void(0)'
-                ],
-                raw($action['text'])
-            );
-
-            // Append id data property
-            if (!isset($action['data']['id'])) {
-                $action['data']['id'] = ['value' => 'id'];
-            }
-
-            foreach ($action['data'] as $key => $datum) {
-                if (is_array($datum)) { // For dynamic data
-                    $datum = (object)$datum;
-                    $a->data($key, $model->handleDatum($datum->value));
-                } else {
-                    $a->data($key, $datum);
-                }
-            }
-
-            // Setup rules
-            if (isset($action['expression'])) {
-                if (Yii::app()->evaluateExpression($action['expression'], ['model' => $model])) {
-                    $actions[] = $a;
-                } else {
-                    continue;
-                }
-            } else {
-                $actions[] = $a;
-            }
-        }
-
-        return $actions;
-    }
-
-    /**
-     * @param array $actions
-     */
-    public function setActions(array $actions)
-    {
-        $this->_actions = $actions;
+        $this->_table = $table;
     }
 }
