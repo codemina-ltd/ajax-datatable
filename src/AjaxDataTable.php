@@ -159,7 +159,7 @@ class AjaxDataTable
      */
     private function buildActionsView(CActiveRecord $model)
     {
-        return $this->_controller->renderPartial('actions', [
+        return $this->_controller->renderPartial($this->_actionView, [
             'model' => $model
         ], true);
     }
