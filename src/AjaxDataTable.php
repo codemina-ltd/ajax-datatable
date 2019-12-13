@@ -3,6 +3,7 @@
 namespace CodeMina\AjaxTable;
 
 use CActiveRecord;
+use CController;
 use CDbCriteria;
 use CException;
 use CHttpRequest;
@@ -57,14 +58,24 @@ class AjaxDataTable
     private $_columns = [];
     private $_sort;
     private $_with = [];
+    private $_withActions;
+    private $_controller;
+    private $_actionView;
 
     /**
      * AjaxDataTable constructor.
      * @param mixed|CActiveRecord $className
+     * @param CController $controller
+     * @param bool $withActions
+     * @param string $actionView
      * @throws CException
      */
-    public function __construct(string $className)
+    public function __construct(string $className, CController $controller, bool $withActions = true, string $actionView = null)
     {
+        $this->_withActions = $withActions;
+        $this->_controller = $controller;
+        $this->_actionView = $actionView;
+
         if ((new $className) instanceof CActiveRecord) {
             $this->init();
 
@@ -131,12 +142,26 @@ class AjaxDataTable
             }
 
             $data = $record->getColumns();
-            $data['actions'] = $this->buildActions($record);
+            if ($this->_withActions && !is_null($this->_actionView)) {
+                $data['actions'] = $this->buildActionsView($record);
+            }
 
             $this->_data->data[] = $data;
         }
 
         echo json_encode($this->_data);
+    }
+
+    /**
+     * @param CActiveRecord $model
+     * @return string|string[]|null
+     * @throws CException
+     */
+    private function buildActionsView(CActiveRecord $model)
+    {
+        return $this->_controller->renderPartial('actions', [
+            'model' => $model
+        ], true);
     }
 
     private function setupPage()
