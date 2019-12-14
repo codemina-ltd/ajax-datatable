@@ -214,8 +214,8 @@ class AjaxDataTable
     {
         $this->_data->data = [];
         $this->_data->draw = $this->_draw;
-        $this->_data->recordsTotal = $this->_count;
-        $this->_data->recordsFiltered = $this->_filtered;
+        $this->_data->recordsTotal = (int) $this->_count;
+        $this->_data->recordsFiltered = (int) $this->_filtered;
     }
 
     /**
