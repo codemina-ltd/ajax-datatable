@@ -64,9 +64,11 @@ class AjaxDataTable
      * @param mixed|CActiveRecord $className
      * @param CController $controller
      * @param string $actionView
+     * @param array $with
+     * @param CDbCriteria|null $criteria
      * @throws CException
      */
-    public function __construct(string $className, CController $controller, string $actionView = null)
+    public function __construct(string $className, CController $controller, string $actionView = null, $with = [], CDbCriteria $criteria = null)
     {
         $this->_controller = $controller;
         $this->_actionView = $actionView;
@@ -75,7 +77,7 @@ class AjaxDataTable
             $this->init();
 
             $this->_className = $className;
-            $this->_count = $className::model()->count($this->_criteria);
+            $this->_count = $className::model()->with($with)->count($criteria ?? $this->_criteria);
             $this->_pages = new CPagination($this->_count);
         } else {
             throw new CException('Model is not instance of CActiveRecord', 500);
