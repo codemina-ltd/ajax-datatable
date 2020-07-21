@@ -184,11 +184,13 @@ class AjaxDataTable
     {
         $this->_filtered = (int)$this->_className::model()->with($this->_with)->count($this->_criteria);
 
-        $column = $this->_columns[(int)$this->_sort[0]['column']]['name'];
-        $dir = $this->_sort[0]['dir'];
+        if (!is_null($this->_sort)) {
+            $column = $this->_columns[(int)$this->_sort[0]['column']]['name'];
+            $dir = $this->_sort[0]['dir'];
 
-        if (!empty($column) && !empty($dir)) {
-            $this->_criteria->order = "{$column} {$dir}";
+            if (!empty($column) && !empty($dir)) {
+                $this->_criteria->order = "{$column} {$dir}";
+            }
         }
 
         $this->_pages->setPageSize($this->getPageSize());
