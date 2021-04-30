@@ -3,7 +3,10 @@
     "description": "Yii Ajax DataTable library",
     "type": "library",
     "require": {
-        "oscarotero/html": "^0.1.5"
+        "oscarotero/html": "^0.1.5",
+        "codemina/yii": "^1.7",
+        "ext-mbstring": "*",
+        "ext-json": "*"
     },
     "license": "Apache-2.0",
     "authors": [

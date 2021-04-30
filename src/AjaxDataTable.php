@@ -63,7 +63,7 @@ class AjaxDataTable
      * AjaxDataTable constructor.
      * @param mixed|CActiveRecord $className
      * @param CController $controller
-     * @param string $actionView
+     * @param string|null $actionView
      * @param array $with
      * @param CDbCriteria|null $criteria
      * @throws CException
@@ -74,17 +74,20 @@ class AjaxDataTable
         $this->_actionView = $actionView;
 
         if ((new $className) instanceof CActiveRecord) {
-            $this->init();
+            $this->init($criteria);
 
             $this->_className = $className;
-            $this->_count = $className::model()->with($with)->count($criteria ?? $this->_criteria);
+            $this->_count = $className::model()->with($with)->count($this->_criteria);
             $this->_pages = new CPagination($this->_count);
         } else {
             throw new CException('Model is not instance of CActiveRecord', 500);
         }
     }
 
-    private function init()
+    /**
+     * @param CDbCriteria $criteria
+     */
+    private function init(CDbCriteria $criteria)
     {
         $this->_request = Yii::app()->request;
 
@@ -95,7 +98,7 @@ class AjaxDataTable
         $this->_columns = $this->_request->getQuery('columns');
         $this->_sort = $this->_request->getQuery('order');
 
-        $this->_criteria = new CDbCriteria();
+        $this->_criteria = $criteria ?? new CDbCriteria();
         $this->_data = new stdClass();
     }
 
@@ -143,14 +146,6 @@ class AjaxDataTable
     }
 
     /**
-     * @param mixed $order
-     */
-    public function setOrder($order): void
-    {
-        $this->_order = $order;
-    }
-
-    /**
      * @throws CException
      */
     public function getResult()
@@ -177,9 +172,6 @@ class AjaxDataTable
         echo json_encode($this->_data);
     }
 
-    /**
-     * @throws CException
-     */
     private function setupPage()
     {
         $this->_filtered = (int)$this->_className::model()->with($this->_with)->count($this->_criteria);
@@ -201,7 +193,7 @@ class AjaxDataTable
     /**
      * @return int
      */
-    private function getPageSize()
+    private function getPageSize(): int
     {
         return $this->_length < 0 ? $this->_count : $this->_length;
     }
@@ -224,10 +216,10 @@ class AjaxDataTable
 
     /**
      * @param CActiveRecord $model
-     * @return string|string[]|null
+     * @return string|null
      * @throws CException
      */
-    private function buildActionsView(CActiveRecord $model)
+    private function buildActionsView(CActiveRecord $model): ?string
     {
         return $this->_controller->renderPartial($this->_actionView, [
             'model' => $model
