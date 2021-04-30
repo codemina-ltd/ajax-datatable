@@ -85,9 +85,9 @@ class AjaxDataTable
     }
 
     /**
-     * @param CDbCriteria $criteria
+     * @param CDbCriteria|null $criteria
      */
-    private function init(CDbCriteria $criteria)
+    private function init(?CDbCriteria $criteria)
     {
         $this->_request = Yii::app()->request;
 
