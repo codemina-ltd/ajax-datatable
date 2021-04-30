@@ -137,7 +137,7 @@ class AjaxDataTable
                     if (!empty($indexes)) {
                         foreach ($indexes as $index) {
                             if ($i == 0) {
-                                $condition = " AND ({$field[0]} LIKE '%{$index}%'";
+                                $condition = "({$field[0]} LIKE '%{$index}%'";
                             } else {
                                 $condition .= " OR {$field[0]} LIKE '%{$index}%'";
                             }
@@ -145,14 +145,14 @@ class AjaxDataTable
                     }
                 } else {
                     if ($i == 0) {
-                        $condition = " AND ($field LIKE '%{$this->_search->value}%'";
+                        $condition = "($field LIKE '%{$this->_search->value}%'";
                     } else {
                         $condition .= " OR $field LIKE '%{$this->_search->value}%'";
                     }
                 }
             }
             $condition .= ")";
-            $this->_criteria->condition .= $condition;
+            $this->_criteria->condition .= (!empty(trim($this->_criteria->condition)) ? ' AND ' : '') . $condition;
         }
     }
 
