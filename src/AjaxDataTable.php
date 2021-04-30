@@ -124,7 +124,8 @@ class AjaxDataTable
     public function setSearchFields(...$fields)
     {
         if (is_object($this->_search) && !empty($this->_search->value)) {
-            foreach ($fields as $field) {
+            $condition = "";
+            foreach ($fields as $i => $field) {
                 if (is_array($field)) {
                     $items = Yii::app()->evaluateExpression($field[1]);
                     $indexes = [];
@@ -135,13 +136,23 @@ class AjaxDataTable
                     }
                     if (!empty($indexes)) {
                         foreach ($indexes as $index) {
-                            $this->_criteria->addSearchCondition($field[0], $index, true, 'OR');
+                            if ($i == 0) {
+                                $condition = " AND ({$field[0]} LIKE '%{$index}%'";
+                            } else {
+                                $condition .= " OR {$field[0]} LIKE '%{$index}%'";
+                            }
                         }
                     }
                 } else {
-                    $this->_criteria->addSearchCondition($field, $this->_search->value, true, 'OR');
+                    if ($i == 0) {
+                        $condition = " AND ($field LIKE '%{$this->_search->value}%'";
+                    } else {
+                        $condition .= " OR $field LIKE '%{$this->_search->value}%'";
+                    }
                 }
             }
+            $condition .= ")";
+            $this->_criteria->condition .= $condition;
         }
     }
 
