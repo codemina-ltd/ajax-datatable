@@ -4,7 +4,6 @@
     "type": "library",
     "require": {
         "oscarotero/html": "^0.1.5",
-        "codemina/yii": "^1.7",
         "ext-mbstring": "*",
         "ext-json": "*"
     },
@@ -19,5 +18,8 @@
         "psr-4": {
             "CodeMina\\AjaxTable\\" : "src"
         }
+    },
+    "require-dev": {
+        "codemina/yii": "^2.1"
     }
 }
