@@ -3,7 +3,6 @@
     "description": "Yii Ajax DataTable library",
     "type": "library",
     "require": {
-        "oscarotero/html": "^0.1.5",
         "ext-mbstring": "*",
         "ext-json": "*"
     },

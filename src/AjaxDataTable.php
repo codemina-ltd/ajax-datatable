@@ -10,13 +10,6 @@ use CHttpRequest;
 use CPagination;
 use stdClass;
 use Yii;
-use function Html\div;
-use function Html\span;
-use function Html\ul;
-use function Html\li;
-use function Html\a;
-use function Html\button;
-use function Html\raw;
 
 /**
  * Class AjaxDataTable
