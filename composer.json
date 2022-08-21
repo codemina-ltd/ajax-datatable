@@ -4,7 +4,8 @@
     "type": "library",
     "require": {
         "ext-mbstring": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "codemina/yii": "^3.1"
     },
     "license": "Apache-2.0",
     "authors": [
@@ -17,8 +18,5 @@
         "psr-4": {
             "CodeMina\\AjaxTable\\" : "src"
         }
-    },
-    "require-dev": {
-        "codemina/yii": "^2.1"
     }
 }

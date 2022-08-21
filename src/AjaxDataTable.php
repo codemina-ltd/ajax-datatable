@@ -36,10 +36,8 @@ class AjaxDataTable
     private $_criteria;
     private $_pages;
     private $_draw;
-    private $_request;
     private $_filtered;
     private $_count;
-    private $_order = 'id DESC';
     private $_length;
     private $_start;
     private $_className;
@@ -82,14 +80,14 @@ class AjaxDataTable
      */
     private function init(?CDbCriteria $criteria)
     {
-        $this->_request = Yii::app()->request;
+        $_request = Yii::app()->request;
 
-        $this->_length = (int)$this->_request->getQuery('length');
-        $this->_start = (int)$this->_request->getQuery('start');
-        $this->_draw = (int)$this->_request->getQuery('draw');
-        $this->_search = (object)$this->_request->getQuery('search');
-        $this->_columns = $this->_request->getQuery('columns');
-        $this->_sort = $this->_request->getQuery('order');
+        $this->_length = (int)$_request->getQuery('length');
+        $this->_start = (int)$_request->getQuery('start');
+        $this->_draw = (int)$_request->getQuery('draw');
+        $this->_search = (object)$_request->getQuery('search');
+        $this->_columns = $_request->getQuery('columns');
+        $this->_sort = $_request->getQuery('order');
 
         $this->_criteria = $criteria ?? new CDbCriteria();
         $this->_data = new stdClass();
