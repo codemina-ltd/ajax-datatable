@@ -150,7 +150,7 @@ class AjaxDataTable
     /**
      * @throws CException
      */
-    public function getResult()
+    public function getResult(bool $return = false)
     {
         $this->setupPage();
 
@@ -171,7 +171,11 @@ class AjaxDataTable
             $this->_data->data[] = $data;
         }
 
-        echo json_encode($this->_data);
+        if ($return) {
+            return $this->_data;
+        }
+
+        return new JsonResponse($this->_data);
     }
 
     private function setupPage()
