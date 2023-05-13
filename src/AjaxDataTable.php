@@ -154,7 +154,7 @@ class AjaxDataTable
     {
         $this->setupPage();
 
-        $rs = $this->_className::model()->cache(1000)->with($this->_with)->findAll($this->_criteria);
+        $rs = $this->_className::model()->with($this->_with)->findAll($this->_criteria);
         $this->setData();
 
         foreach ($rs as $key => $record) {
