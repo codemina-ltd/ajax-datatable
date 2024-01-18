@@ -135,10 +135,12 @@ class AjaxDataTable
                         }
                     }
                 } else {
+                    $value = addslashes($this->_search->value);
+                    
                     if ($i == 0) {
-                        $condition = "($field LIKE '%{$this->_search->value}%'";
+                        $condition = "($field LIKE '%{$value}%'";
                     } else {
-                        $condition .= " OR $field LIKE '%{$this->_search->value}%'";
+                        $condition .= " OR $field LIKE '%{$value}%'";
                     }
                 }
             }
